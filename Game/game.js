@@ -1,11 +1,10 @@
 const canvas = document.getElementById("canvas");           //Selects HTML canvas element, and assigns it to the canvas variable
 const canvasContext = canvas.getContext("2d");              //Retrieves 2D drawing context.The canvasContext object provides methods and properties for drawing shapes, text, images, and more on the canvas.
-const pacmanFrames = document.getElementById("animation");  //Selects HTML "animation" element, and assigns it to the pacmanFrames variable
+const pacmanFrames = document.getElementById("animations");  //Selects HTML "animation" element, and assigns it to the pacmanFrames variable
 const ghostFrames = document.getElementById("ghosts");      //Same as above, but ghosts
 const tileSize = 20;               //Sets each tile size to 20px
 const pacmanSize = 20;             //Sets Pacman's size to 20px
 const pacmanColor = 'yellow';      //Sets Pacman's color to yellow
- 
 let createRect = (x, y, width, height, color) => {   //Defines a function that draws a filled rectangle on the canvas
     canvasContext.fillStyle = color;                 //Sets the fillStyle to a specified color
     canvasContext.fillRect(x, y, width, height);     //Draws the rectangle with the fillRect method
@@ -13,9 +12,14 @@ let createRect = (x, y, width, height, color) => {   //Defines a function that d
 let fps = 30;                                            //Sets frame rate to 30
 let oneBlockSize = 20;                                   //
 let wallColor = "#342DCA";                               //Sets wall colors to shade of blue
-let wallSpaceWidth = oneBlockSize / 1.3                  //Calculates width of wall spaces 
+let wallSpaceWidth = oneBlockSize / 1.4;                 //Calculates width of wall spaces 
 let wallOffset = (oneBlockSize - wallSpaceWidth) / 2;     //Calculates offset for positioning walls correctly
 let wallInnerColor = "black";
+
+const DIRECTION_RIGHT = 4;
+const DIRECTION_UP = 3;
+const DIRECTION_LEFT = 2;
+const DIRECTION_BOTTOM = 1;
 
 
 let map = [
@@ -53,12 +57,14 @@ let gameLoop = () => {          //This function is repeatedly called at a regula
 
 let update = () => {            //Logic for updating the game state
     // todo
+    pacman.moveProcess()
 }
 
 let draw = () => {              //Renders the game to the screen
     createRect(0, 0, canvas.width, canvas.height, "black");    //Draws a black recetangle
     // todo 
-    drawWalls()
+    drawWalls();
+    pacman.draw();
 }
 
 let gameInterval = setInterval(gameLoop, 1000/fps)   //Sets refresh rate to ~33 milliseconds
@@ -74,8 +80,8 @@ let drawWalls= () => {                              //Loops through the map arra
                     oneBlockSize,                   //Height of oneBlockSize
                     wallColor                       //Colored
                 );
-                if (j > 0 && map[i][j - 1] == 1) {         
-                    createRect(                            
+                if (j > 0 && map[i][j - 1] == 1) {
+                    createRect(
                         j * oneBlockSize,
                         i * oneBlockSize + wallOffset,
                         wallSpaceWidth + wallOffset,
@@ -113,4 +119,17 @@ let drawWalls= () => {                              //Loops through the map arra
             }
         }
     }
+};
+
+let createNewPacman = () => {
+    pacman = new Pacman(
+        oneBlockSize,
+        oneBlockSize,
+        oneBlockSize,
+        oneBlockSize,
+        oneBlockSize / 5
+    )
 }
+
+createNewPacman();
+gameLoop();
